@@ -20,5 +20,6 @@ public class WeightedMethodCountCalculator {
 		}
 		return WeightedMethodCount;
 	}
+	
 
 }
