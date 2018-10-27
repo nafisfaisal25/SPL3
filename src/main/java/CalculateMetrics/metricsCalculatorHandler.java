@@ -41,35 +41,27 @@ public class metricsCalculatorHandler {
         
 	}
 	
+	public void weightedMethodCountCalcHandler() throws FileNotFoundException{
+		try {
+            new VoidVisitorAdapter<Object>() {
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    WeightedMethodCountCalculator w=new WeightedMethodCountCalculator(n);
+                    System.out.println("Class Name: " + n.getName() + "\n" + "WMC: " + w.calculateWeightedMethodCount());
+                }
+            }.visit(JavaParser.parse(file), null);
+            System.out.println(); // empty line
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+        
+	}
 	
 	
-	 public void classOfInterface(File file) {
-		 ClassOrInterfaceDeclaration returnType = null;
-	        try {
-	            new VoidVisitorAdapter<Object>() {
-	                @Override
-	                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-	                    super.visit(n, arg);
-	                    
-	                   
-	              		//cyclomatic complexity
-	                    for (MethodDeclaration method : n.getMethods()) {
-	            			CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
-	            			System.out.println("Method Name: "+ method.getName() + "\n" + "CYC: " +c.calculateComplexity());
-	            		}
-	            		
-	                    //WeightedMethodCount
-	                    WeightedMethodCountCalculator w=new WeightedMethodCountCalculator(n);
-	                    System.out.println("Class Name: " + n.getName() + "\n" + "WMC: " + w.calculateWeightedMethodCount());
-	                    
-	                }
-	            }.visit(JavaParser.parse(file), null);
-	            System.out.println(); // empty line
-	        } catch (IOException e) {
-	            new RuntimeException(e);
-	        }
-	    }
-	    
+	
+	
+	
 	    public static void compilationUnit(File file) {
 	    	TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
 	        TypeSolver javaParserTypeSolver = new JavaParserTypeSolver(new File("../Account/src"));
