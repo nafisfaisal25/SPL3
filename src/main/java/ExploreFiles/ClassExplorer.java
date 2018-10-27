@@ -35,24 +35,27 @@ public class ClassExplorer {
             System.out.println(path);
             System.out.println(Strings.repeat("=", path.length()));
             metricsCalculatorHandler handler=new metricsCalculatorHandler(file);
+            /*
             try {
 				handler.cyclomaticComplexityCaclHandler();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
+            handler.ATFDCalcHandler(new FileExplorer(projectDir).getDotjavaContainer());
+            //compilationUnit(file);
             
         }).explore(projectDir);
     }
     
     public static void compilationUnit(File file) {
     	TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
-        TypeSolver javaParserTypeSolver = new JavaParserTypeSolver(new File("../Account/src"));
-        reflectionTypeSolver.setParent(reflectionTypeSolver);
+        //reflectionTypeSolver.setParent(reflectionTypeSolver);
         
         CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
         combinedSolver.add(reflectionTypeSolver);
-        combinedSolver.add(javaParserTypeSolver);
+        combinedSolver.add(new JavaParserTypeSolver(new File("../Account/src")));
+        
         
         //TypeSolver typeSolver = new CombinedTypeSolver();
 		JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedSolver);

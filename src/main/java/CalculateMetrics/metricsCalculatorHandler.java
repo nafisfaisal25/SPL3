@@ -3,6 +3,7 @@ package CalculateMetrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Set;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -14,6 +15,8 @@ import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
+
+import ExploreFiles.FileExplorer;
 
 public class metricsCalculatorHandler {
 	File file;
@@ -58,22 +61,41 @@ public class metricsCalculatorHandler {
         
 	}
 	
+	public void ATFDCalcHandler(Set <String> dotJavaContainer){
+		
+		
+		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
+        CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
+        combinedSolver.add(reflectionTypeSolver);
+        for (String filePath : dotJavaContainer) {
+        	System.out.println(filePath);
+			combinedSolver.add(new JavaParserTypeSolver(new File(filePath)));
+		}
+        
+		JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedSolver);
+		JavaParser.getStaticConfiguration().setSymbolResolver(symbolSolver);
+		try {
+            new VoidVisitorAdapter<Object>() {
+                @Override
+                public void visit(CompilationUnit n, Object arg) {
+                    super.visit(n, arg);
+                    ATFDCalculator a=new ATFDCalculator(n);
+                    a.doOperation();
+                }
+            }.visit(JavaParser.parse(file), null);
+            System.out.println(); // empty line
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+        
+	}
+	
 	
 	
 	
 	
 	    public static void compilationUnit(File file) {
-	    	TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
-	        TypeSolver javaParserTypeSolver = new JavaParserTypeSolver(new File("../Account/src"));
-	        reflectionTypeSolver.setParent(reflectionTypeSolver);
-	        
-	        CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
-	        combinedSolver.add(reflectionTypeSolver);
-	        combinedSolver.add(javaParserTypeSolver);
-	        
-	        //TypeSolver typeSolver = new CombinedTypeSolver();
-			JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedSolver);
-			JavaParser.getStaticConfiguration().setSymbolResolver(symbolSolver);
+	    	
 			
 	        try {
 	            new VoidVisitorAdapter<Object>() {
