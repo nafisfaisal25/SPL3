@@ -1,4 +1,4 @@
-package find.JavaFile;
+package CalculateMetrics;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
