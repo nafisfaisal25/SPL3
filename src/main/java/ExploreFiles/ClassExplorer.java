@@ -81,7 +81,7 @@ public class ClassExplorer {
     
 
     public static void main(String[] args) {
-        File projectDir = new File("../Account");
+        File projectDir = new File("../SymbolSolverExperiment");
         listClasses(projectDir);
     }
 }

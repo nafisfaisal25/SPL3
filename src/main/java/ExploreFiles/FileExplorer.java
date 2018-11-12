@@ -30,7 +30,7 @@ public class FileExplorer {
            // System.out.println(path);
             //System.out.println(Strings.repeat("=", path.length()));
             //System.out.println(file.getParent());
-            dotJavaContainer.add(file.getParentFile().getParent());
+            dotJavaContainer.add(file.getParent());
             
         }).explore(rootFile);
     }

@@ -63,12 +63,12 @@ public class metricsCalculatorHandler {
 	
 	public void ATFDCalcHandler(Set <String> dotJavaContainer){
 		
-		
+		System.out.println(dotJavaContainer);
 		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
         CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
         combinedSolver.add(reflectionTypeSolver);
         for (String filePath : dotJavaContainer) {
-        	System.out.println(filePath);
+        	//System.out.println(filePath);
 			combinedSolver.add(new JavaParserTypeSolver(new File(filePath)));
 		}
         
@@ -92,7 +92,7 @@ public class metricsCalculatorHandler {
 	
 	
 	
-	
+/*	
 	
 	    public static void compilationUnit(File file) {
 	    	
@@ -114,5 +114,5 @@ public class metricsCalculatorHandler {
 	        }
 	    }
 	    
-	
+	*/
 }

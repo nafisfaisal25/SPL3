@@ -8,6 +8,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -21,17 +22,18 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSol
 import ExploreFiles.FileExplorer;
 
 public class ATFDCalculator extends VoidVisitorAdapter<Void> {
-	private CompilationUnit declaredClass;
+	private CompilationUnit cu;
 	
-	public ATFDCalculator(CompilationUnit declaredClass) {
+	public ATFDCalculator(CompilationUnit cu) {
 		//System.out.println(" * " + declaredClass.getName());
-		this.declaredClass=declaredClass;
+		this.cu=cu;
 	}
 	public void doOperation() {
 		
-		visit(declaredClass,null);
-		List<FieldDeclaration> a =declaredClass.findAll(FieldDeclaration.class);
-		getTypeofReferences();
+		//visit(cu,null);
+		//List<FieldDeclaration> a =cu.findAll(FieldDeclaration.class);
+		//getTypeofReferences();
+		variableCallFinder();
 		
 	}
 	
@@ -39,24 +41,32 @@ public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 	public void visit(MethodCallExpr n, Void arg) {
         
         super.visit(n, arg);
-        //n.getN
+        System.out.println(n);
     }
+	
+	public void variableCallFinder() {
+		List<FieldAccessExpr> fieldCallList=cu.findAll(FieldAccessExpr.class);
+		for (FieldAccessExpr fieldAccessExpr : fieldCallList) {
+			System.out.println(fieldAccessExpr.getScope().calculateResolvedType());
+		}
+	}
 	
 	
 
 	public void getTypeofReferences() {
-		
+		/*
 		declaredClass.findAll(AssignExpr.class).forEach(ae -> {
 			ResolvedType resolvedType = ae.calculateResolvedType();
 			System.out.println(ae.toString() + " is a: " + resolvedType);
 			
 		});
-		//System.out.println(declaredClass);
-		//List<FieldDeclaration> fieldDeclaration = declaredClass.findAll(FieldDeclaration.class);
+		System.out.println(declaredClass);*/
+		List<FieldDeclaration> fieldDeclaration = cu.findAll(FieldDeclaration.class);
 		//System.out.println("Field type: " + fieldDeclaration.getVariables().get(0).getType().resolve().asReferenceType().getQualifiedName());
-		//if(fieldDeclaration.size()!=0)
-		//System.out.println("Field type: " + fieldDeclaration.get(0).getVariables().get(0).getType().resolve());
-			 
+		if(fieldDeclaration.size()!=0) {
+			System.out.println("Field type: " + fieldDeclaration.get(0).getVariables().get(0).getType().resolve().asReferenceType().getQualifiedName());
+			System.out.println(fieldDeclaration.get(0).getVariables().get(0).getType().resolve().asReferenceType());
+		}	 
 	}
 	
 	
