@@ -6,8 +6,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		File projectDir = new File("../Account");
-        System.out.println(new FileExplorer(projectDir).getDotjavaContainer());
+		File projectDir = new File("../SymbolSolverExperiment");
+		
+		ClassExplorer classexplorer=new ClassExplorer();
+		classexplorer.listClasses(projectDir);
 	}
 
 }

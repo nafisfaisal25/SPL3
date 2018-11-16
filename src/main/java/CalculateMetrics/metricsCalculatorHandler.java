@@ -16,6 +16,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSol
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 
+import ExploreFiles.ClassExplorer;
 import ExploreFiles.FileExplorer;
 
 public class metricsCalculatorHandler {
@@ -61,12 +62,15 @@ public class metricsCalculatorHandler {
         
 	}
 	
-	public void ATFDCalcHandler(Set <String> dotJavaContainer){
+	public void ATFDCalcHandler(Set <String> dotJavaContainer,Set<String>allClassName){
 		
-		System.out.println(dotJavaContainer);
+		//System.out.println(dotJavaContainer);
+		
+		
 		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
         CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
         combinedSolver.add(reflectionTypeSolver);
+        
         for (String filePath : dotJavaContainer) {
         	//System.out.println(filePath);
 			combinedSolver.add(new JavaParserTypeSolver(new File(filePath)));
@@ -76,14 +80,27 @@ public class metricsCalculatorHandler {
 		JavaParser.getStaticConfiguration().setSymbolResolver(symbolSolver);
 		try {
             new VoidVisitorAdapter<Object>() {
+            	String className;
+            	@Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    className=n.getNameAsString();
+                }
+            	
                 @Override
                 public void visit(CompilationUnit n, Object arg) {
                     super.visit(n, arg);
-                    ATFDCalculator a=new ATFDCalculator(n);
+                    ATFDCalculator a=new ATFDCalculator(n,className,allClassName);
                     a.doOperation();
+                    int numberOfATFD=a.getATFD();
+                    System.out.println("Class Name: " + className + "\n" + "ATFD: " + numberOfATFD);
+                
+                    
                 }
+                
+                
             }.visit(JavaParser.parse(file), null);
-            System.out.println(); // empty line
+            
         } catch (IOException e) {
             new RuntimeException(e);
         }
