@@ -6,10 +6,14 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		File projectDir = new File("../SymbolSolverExperiment");
+		//File projectDir = new File("C:\\\\Users\\\\DELL\\\\Desktop\\\\MetricsTool\\\\JSettlers-Test-Data\\\\jsettlers-1.1.18-src");
+		File projectDir = new File("C:\\\\Users\\\\DELL\\\\Desktop\\\\MetricsTool\\\\Proguard\\proguard3.11");
+
+		//File projectDir = new File("C:\\Users\\DELL\\workspace\\SymbolSolverExperiment");
 		
 		ClassExplorer classexplorer=new ClassExplorer();
-		classexplorer.listClasses(projectDir);
+		classexplorer.doOperation(projectDir);
+		//classexplorer.listClasses(projectDir);
 	}
 
 }

@@ -3,12 +3,18 @@ package CalculateMetrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
+
+import javax.lang.model.element.VariableElement;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
@@ -18,6 +24,9 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 
 import ExploreFiles.ClassExplorer;
 import ExploreFiles.FileExplorer;
+import javassist.bytecode.LocalVariableAttribute;
+import javassist.bytecode.LocalVariableTypeAttribute;
+import javassist.compiler.ast.Variable;
 
 public class metricsCalculatorHandler {
 	File file;
@@ -25,6 +34,8 @@ public class metricsCalculatorHandler {
 	public metricsCalculatorHandler(File file) {
 		this.file=file;
 	}
+	
+	
 	
 	public void cyclomaticComplexityCaclHandler() throws FileNotFoundException{
 		try {
@@ -62,30 +73,10 @@ public class metricsCalculatorHandler {
         
 	}
 	
-	public void ATFDCalcHandler(Set <String> dotJavaContainer,Set<String>allClassName){
+	public void ATFDCalcHandler(Set<String>allClassName,JavaParser parser,String className){
 		
-		//System.out.println(dotJavaContainer);
-		
-		
-		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
-        CombinedTypeSolver combinedSolver = new CombinedTypeSolver();
-        combinedSolver.add(reflectionTypeSolver);
-        
-        for (String filePath : dotJavaContainer) {
-        	//System.out.println(filePath);
-			combinedSolver.add(new JavaParserTypeSolver(new File(filePath)));
-		}
-        
-		JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedSolver);
-		JavaParser.getStaticConfiguration().setSymbolResolver(symbolSolver);
 		try {
             new VoidVisitorAdapter<Object>() {
-            	String className;
-            	@Override
-                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-                    super.visit(n, arg);
-                    className=n.getNameAsString();
-                }
             	
                 @Override
                 public void visit(CompilationUnit n, Object arg) {
@@ -93,7 +84,39 @@ public class metricsCalculatorHandler {
                     ATFDCalculator a=new ATFDCalculator(n,className,allClassName);
                     a.doOperation();
                     int numberOfATFD=a.getATFD();
+                   
                     System.out.println("Class Name: " + className + "\n" + "ATFD: " + numberOfATFD);
+                
+                    
+                }
+                
+                
+            }.visit(parser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+        
+	}
+	
+	public void NOAVCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    for (MethodDeclaration method : n.getMethods()) {
+            			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
+            			NOAVCalculator a=new NOAVCalculator(method,className,allClassName);
+            			a.doOperation();
+            			System.out.println("Method: " + method.getNameAsString() + "\n" + "NOAV: " + a.getNOAV());
+                    	
+                    	
+                    	
+            		}
+                    
                 
                     
                 }
