@@ -27,7 +27,7 @@ import ExploreFiles.FileExplorer;
 public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 	private CompilationUnit cu;
 	private String className;
-	private int numberOfATFD;
+	private int numberOfATFD=0;
 	private Set<String>allClassname;
 	
 	public ATFDCalculator(CompilationUnit cu,String className,Set<String>allClassname) {
@@ -37,10 +37,7 @@ public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 		this.allClassname=allClassname;
 	}
 	public void doOperation() {
-		
-		//visit(cu,null);
-		//List<FieldDeclaration> a =cu.findAll(FieldDeclaration.class);
-		//getTypeofReferences();
+	
 		variableCallFinder();
 		MethodCallFinder();
 		
@@ -51,10 +48,15 @@ public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 		List<FieldAccessExpr> fieldCallList=cu.findAll(FieldAccessExpr.class);
 		for (FieldAccessExpr fieldAccessExpr : fieldCallList) {
 			//System.out.println(fieldAccessExpr.getScope().calculateResolvedType().asReferenceType().getQualifiedName());
+			String type=null;
+			try {
+				type=fieldAccessExpr.getScope().calculateResolvedType().asReferenceType().getQualifiedName();
+
+			} catch (Exception e) {
+				//System.out.println("dhora khaise");
+			}
 			
-			String type=fieldAccessExpr.getScope().calculateResolvedType().asReferenceType().getQualifiedName().toString();
-			//System.out.println(type);
-			if(type!=className) numberOfATFD++;
+			if(type!=null && !type.equals(className) && allClassname.contains(type)) numberOfATFD++;
 			
 		}
 	}
@@ -62,10 +64,20 @@ public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 	public void MethodCallFinder() {
 		List<MethodCallExpr> methodCall=cu.findAll(MethodCallExpr.class);
 		for (MethodCallExpr methodCallExpr : methodCall) {
-			ResolvedMethodDeclaration x= methodCallExpr.resolve();
-			if(allClassname.contains(x.getClassName())) {
-				if(!x.getReturnType().isVoid())numberOfATFD++;
-				//if(!x.getReturnType().isVoid())System.out.println(x.getName());
+			ResolvedMethodDeclaration x=null;
+			try {
+				x= methodCallExpr.resolve();
+			} catch (Exception e) {
+				//System.out.println("dhora khaise");
+			}
+			
+			if(x!=null) {
+				String QuilifiedName=x.getPackageName()+"."+x.getClassName();
+
+				if(allClassname.contains(QuilifiedName) && !QuilifiedName.equals(className) ) {
+					if(!x.getReturnType().isVoid())numberOfATFD++;
+					//if(!x.getReturnType().isVoid())System.out.println(x.getName());
+				}
 			}
 			
 		}

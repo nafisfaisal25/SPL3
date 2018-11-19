@@ -26,11 +26,10 @@ public class FileExplorer {
 	
 	public void browseClasses(File rootFile) {
         new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
-            //String src = file.getParent();
-           // System.out.println(path);
-            //System.out.println(Strings.repeat("=", path.length()));
-            //System.out.println(file.getParent());
-            dotJavaContainer.add(file.getParent());
+            
+        	dotJavaContainer.add(file.getParent());
+            dotJavaContainer.add(file.getParentFile().getParent());
+            
             
         }).explore(rootFile);
     }
