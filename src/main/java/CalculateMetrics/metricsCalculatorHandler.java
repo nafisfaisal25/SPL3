@@ -113,21 +113,61 @@ public class metricsCalculatorHandler {
             			a.doOperation();
             			System.out.println("Method: " + method.getNameAsString() + "\n" + "NOAV: " + a.getNOAV());
                     	
-                    	
-                    	
-            		}
-                    
-                
-                    
+                    }
                 }
-                
-                
+               
             }.visit(JavaParser.parse(file), null);
             
         } catch (IOException e) {
             new RuntimeException(e);
         }
-        
+	}
+	
+	public void LOCforMethodcalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    for (MethodDeclaration method : n.getMethods()) {
+            			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
+            			LOCforMethodCalculator a=new LOCforMethodCalculator(method);
+            			a.doOperation();
+            			System.out.println("Method: " + method.getNameAsString() + "\n" + "LOC: " + a.getLOC());
+                    	
+                    }
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+	public void LOCforClassCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    
+                    LOCforClassCalculator a=new LOCforClassCalculator(n);
+            		a.doOperation();
+            		System.out.println("Class Name: " + n.getNameAsString() + "\n" + "LOC: " + a.getLOC());
+                    	
+                    
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
 	}
 	
 	

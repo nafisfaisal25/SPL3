@@ -71,7 +71,7 @@ public class NOAVCalculator {
 		
 	}
 	
-private void countVariableCall() {
+	private void countVariableCall() {
 		
 		
 		List<FieldAccessExpr> fieldCallList=method.findAll(FieldAccessExpr.class);
@@ -91,7 +91,6 @@ private void countVariableCall() {
 			
 		}
 	}
-
 	
 	public int getNOAV(){
 		return variableList.size();
