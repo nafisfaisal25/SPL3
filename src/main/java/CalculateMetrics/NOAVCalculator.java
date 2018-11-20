@@ -33,7 +33,7 @@ public class NOAVCalculator {
 		countParameter();
 		checkAssignExpr();  //global variable can be used as target of a assignment operation
 		checkArgument();	//global variable can be passed as an argument of a method of a different class
-		countVariableCall();
+		countVariableCall(); // access variable of foreign class
 	}
 	
 	
