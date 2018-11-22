@@ -99,6 +99,34 @@ public class metricsCalculatorHandler {
         
 	}
 	
+public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,String className){
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            	
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    for(MethodDeclaration method:n.getMethods()) {
+                    	ATFDforMethodCalculator a=new ATFDforMethodCalculator(method,className,allClassName);
+                        a.doOperation();
+                        int numberOfATFD=a.getATFD();
+                       
+                        System.out.println("Method Name: " + method.getNameAsString() + "\n" + "ATFD for Method: " + numberOfATFD);
+                    }
+                
+                    
+                }
+                
+                
+            }.visit(parser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+        
+	}
+	
 	public void NOAVCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
 		
 		try {
@@ -161,6 +189,31 @@ public class metricsCalculatorHandler {
             		System.out.println("Class Name: " + n.getNameAsString() + "\n" + "LOC: " + a.getLOC());
                     	
                     
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+public void LAACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    for (MethodDeclaration method : n.getMethods()) {
+            			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
+            			LAACalculator a=new LAACalculator(method,className,allClassName);
+            			a.doOperation();
+            			if(a.getLAA()<0)
+            			System.out.println("Method: " + method.getNameAsString() + "\n" + "LAA: " + a.getLAA());
+                    	
+                    }
                 }
                
             }.visit(JavaParser.parse(file), null);

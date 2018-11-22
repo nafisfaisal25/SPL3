@@ -52,9 +52,11 @@ public class ClassExplorer {
 				e.printStackTrace();
 			}*/  
             //handler.ATFDCalcHandler(allClassName,parser,getPackageName(file)+"."+getClassName(file));
-            handler.NOAVCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.NOAVCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.LOCforMethodcalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.LOCforClassCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.ATFDforMethodCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            handler.LAACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             
             
         }).explore(projectDir);

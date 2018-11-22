@@ -73,7 +73,6 @@ public class ATFDCalculator extends VoidVisitorAdapter<Void> {
 			
 			if(x!=null) {
 				String QuilifiedName=x.getPackageName()+"."+x.getClassName();
-
 				if(allClassname.contains(QuilifiedName) && !QuilifiedName.equals(className) ) {
 					if(!x.getReturnType().isVoid())numberOfATFD++;
 					//if(!x.getReturnType().isVoid())System.out.println(x.getName());
