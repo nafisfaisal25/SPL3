@@ -223,7 +223,7 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         }
 	}
 	
-public void FDPCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+	public void FDPCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
 		
 		try {
             new VoidVisitorAdapter<Object>() {
@@ -238,6 +238,72 @@ public void FDPCalcHandler(Set<String>allClassName,JavaParser parser,String clas
             			System.out.println("Method: " + method.getNameAsString() + "\n" + "FDP: " + a.getFDP());
                     	
                     }
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+	public void NOAMCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    NOAMCalculator a=new NOAMCalculator(n);
+            		a.doOperation();
+            		System.out.println("Class Name: " + className + "\n" + "NOAM: " + a.getNOAM());
+                    	
+                    
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+	public void NOPACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    NOPACalculator a=new NOPACalculator(n);
+            		a.doOperation();
+            		System.out.println("Class Name: " + className + "\n" + "NOPA: " + a.getNOPA());
+                    	
+                    
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+	public void WOCCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    WOCCalculator a=new WOCCalculator(n);
+            		a.doOperation();
+            		System.out.println("Class Name: " + className + "\n" + "WOC: " + a.getWOC());
+                    	
+                    
                 }
                
             }.visit(JavaParser.parse(file), null);

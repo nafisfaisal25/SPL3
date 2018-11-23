@@ -57,7 +57,14 @@ public class ClassExplorer {
             //handler.LOCforClassCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.ATFDforMethodCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.LAACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            handler.FDPCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.FDPCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.NOAMCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.NOPACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            handler.WOCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+
+
+
+
 
             
             
