@@ -10,6 +10,8 @@ public class Main {
 		File projectDir = new File("C:\\\\Users\\\\DELL\\\\Desktop\\\\MetricsTool\\\\Proguard\\proguard3.11");
 
 		//File projectDir = new File("C:\\Users\\DELL\\workspace\\SymbolSolverExperiment");
+		//File projectDir = new File("C:\\Users\\DELL\\workspace\\SPL3\\src");
+		
 		
 		ClassExplorer classexplorer=new ClassExplorer();
 		classexplorer.doOperation(projectDir);

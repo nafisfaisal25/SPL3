@@ -198,7 +198,7 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         }
 	}
 	
-public void LAACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+	public void LAACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
 		
 		try {
             new VoidVisitorAdapter<Object>() {
@@ -212,6 +212,30 @@ public void LAACalcHandler(Set<String>allClassName,JavaParser parser,String clas
             			a.doOperation();
             			if(a.getLAA()<0)
             			System.out.println("Method: " + method.getNameAsString() + "\n" + "LAA: " + a.getLAA());
+                    	
+                    }
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
+	}
+	
+public void FDPCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		
+		try {
+            new VoidVisitorAdapter<Object>() {
+            
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    for (MethodDeclaration method : n.getMethods()) {
+            			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
+            			FDPCalculator a=new FDPCalculator(method,className,allClassName);
+            			a.doOperation();
+            			System.out.println("Method: " + method.getNameAsString() + "\n" + "FDP: " + a.getFDP());
                     	
                     }
                 }

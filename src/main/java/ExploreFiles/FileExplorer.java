@@ -29,6 +29,8 @@ public class FileExplorer {
             
         	dotJavaContainer.add(file.getParent());
             dotJavaContainer.add(file.getParentFile().getParent());
+            //dotJavaContainer.add(file.getParentFile().getParentFile().getParent());
+            //dotJavaContainer.add(file.getParentFile().getParentFile().getParentFile().getParent());
             
             
         }).explore(rootFile);

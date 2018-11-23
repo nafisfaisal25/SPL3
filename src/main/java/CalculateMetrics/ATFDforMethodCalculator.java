@@ -1,5 +1,6 @@
 package CalculateMetrics;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class ATFDforMethodCalculator {
 	private String className;
 	private int numberOfATFD=0;
 	private Set<String>allClassname;
+	private Set<String>TotalDifferentClassAccessed=new HashSet<>();
 	
 	public ATFDforMethodCalculator(MethodDeclaration method,String className,Set<String>allClassname) {
 		//System.out.println(" * " + declaredClass.getName());
@@ -41,7 +43,10 @@ public class ATFDforMethodCalculator {
 				//System.out.println("dhora khaise");
 			}
 			
-			if(type!=null && !type.equals(className) && allClassname.contains(type)) numberOfATFD++;
+			if(type!=null && !type.equals(className) && allClassname.contains(type)) {
+				numberOfATFD++;
+				TotalDifferentClassAccessed.add(type);
+			}
 			
 		}
 	}
@@ -50,9 +55,11 @@ public class ATFDforMethodCalculator {
 		List<MethodCallExpr> methodCall=method.findAll(MethodCallExpr.class);
 		for (MethodCallExpr methodCallExpr : methodCall) {
 			ResolvedMethodDeclaration x=null;
+			//System.out.println(methodCallExpr);
 			try {
 				x= methodCallExpr.resolve();
 			} catch (Exception e) {
+				
 				//System.out.println("dhora khaise");
 			}
 			
@@ -60,7 +67,11 @@ public class ATFDforMethodCalculator {
 				String QuilifiedName=x.getPackageName()+"."+x.getClassName();
 
 				if(allClassname.contains(QuilifiedName) && !QuilifiedName.equals(className) ) {
-					if(!x.getReturnType().isVoid())numberOfATFD++;
+					if(!x.getReturnType().isVoid()) {
+						numberOfATFD++;
+						TotalDifferentClassAccessed.add(QuilifiedName);
+					}
+					
 					//if(!x.getReturnType().isVoid())System.out.println(x.getName());
 				}
 			}
@@ -71,6 +82,10 @@ public class ATFDforMethodCalculator {
 	
 	public int getATFD() {
 		return numberOfATFD;
+	}
+	
+	public int getTotalDiffererntClassAccessed() {
+		return TotalDifferentClassAccessed.size();
 	}
 	
 }
