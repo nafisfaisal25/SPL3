@@ -1,7 +1,10 @@
 package ExploreFiles;
 
 import CalculateMetrics.*;
+import SmellDetector.DataClassDetector;
 import SmellDetector.FeatureEnvyDetector;
+import SmellDetector.GodClassDetector;
+import SmellDetector.LongMethodDetector;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -153,6 +156,38 @@ public class ClassExplorer {
             map.put("WMC", list);
             DataClassDetector d=new DataClassDetector();
             d.compareMetricWithThresholad(map,path,getClassName(file));
+            
+            
+        }).explore(projectDir);
+    }
+    
+public void detectGodClass(File projectDir) {
+    	
+    	Map <String, ArrayList<Double>> map=new TreeMap<>();
+    	
+        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+        	
+        	ArrayList<Double>list;
+        	
+            metricsCalculatorHandler handler=new metricsCalculatorHandler(file);
+            
+            list= handler.ATFDCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("ATFD", list);
+            
+            try {
+				list=handler.weightedMethodCountCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            map.put("WMC", list);
+            
+            //list= handler.TCCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //map.put("TCC", list);
+            
+            
+            GodClassDetector g=new GodClassDetector();
+            g.compareMetricWithThresholad(map,path,getClassName(file));
             
             
         }).explore(projectDir);

@@ -80,8 +80,9 @@ public class metricsCalculatorHandler {
         return list;
 	}
 	
-	public void ATFDCalcHandler(Set<String>allClassName,JavaParser parser,String className){
-		
+	public ArrayList<Double> ATFDCalcHandler(Set<String>allClassName,JavaParser parser,String className){
+		ArrayList<Double>list=new ArrayList<>();
+
 		try {
             new VoidVisitorAdapter<Object>() {
             	
@@ -90,9 +91,9 @@ public class metricsCalculatorHandler {
                     super.visit(n, arg);
                     ATFDCalculator a=new ATFDCalculator(n,className,allClassName);
                     a.doOperation();
-                    int numberOfATFD=a.getATFD();
+                    list.add((double) a.getATFD());
                    
-                    System.out.println("Class Name: " + className + "\n" + "ATFD: " + numberOfATFD);
+                    //System.out.println("Class Name: " + className + "\n" + "ATFD: " + a.getATFD());
                 
                     
                 }
@@ -103,6 +104,7 @@ public class metricsCalculatorHandler {
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
         
 	}
 	

@@ -1,10 +1,12 @@
-package ExploreFiles;
+package SmellDetector;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.common.base.Strings;
+
+import ExploreFiles.ClassExplorer;
 
 public class DataClassDetector {
 	public DataClassDetector() {
