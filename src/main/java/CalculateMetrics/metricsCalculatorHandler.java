@@ -3,6 +3,7 @@ package CalculateMetrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,9 @@ public class metricsCalculatorHandler {
 	
 	
 	
-	public void cyclomaticComplexityCaclHandler() throws FileNotFoundException{
+	public ArrayList<Double> cyclomaticComplexityCaclHandler(Set<String> allClassName, JavaParser parser, String className) throws FileNotFoundException{
+		ArrayList<Double>list=new ArrayList<>();
+
 		try {
             new VoidVisitorAdapter<Object>() {
                 @Override
@@ -45,32 +48,36 @@ public class metricsCalculatorHandler {
                     super.visit(n, arg);
                     for (MethodDeclaration method : n.getMethods()) {
             			CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
-            			System.out.println("Method Name: "+ method.getName() + "\n" + "CYC: " +c.calculateComplexity());
+            			list.add((double) c.calculateComplexity());
+            			
+            			//System.out.println("Method Name: "+ method.getName() + "\n" + "CYC: " +c.calculateComplexity());
             		}
                 }
             }.visit(JavaParser.parse(file), null);
-            System.out.println(); // empty line
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
         
 	}
 	
-	public void weightedMethodCountCalcHandler() throws FileNotFoundException{
+	public ArrayList<Double> weightedMethodCountCalcHandler(Set<String> allClassName, JavaParser parser, String className) throws FileNotFoundException{
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
                 @Override
                 public void visit(ClassOrInterfaceDeclaration n, Object arg) {
                     super.visit(n, arg);
                     WeightedMethodCountCalculator w=new WeightedMethodCountCalculator(n);
-                    System.out.println("Class Name: " + n.getName() + "\n" + "WMC: " + w.calculateWeightedMethodCount());
+                    list.add((double) w.calculateWeightedMethodCount());
+                    //System.out.println("Class Name: " + n.getName() + "\n" + "WMC: " + w.calculateWeightedMethodCount());
                 }
             }.visit(JavaParser.parse(file), null);
-            System.out.println(); // empty line
+        
         } catch (IOException e) {
             new RuntimeException(e);
         }
-        
+        return list;
 	}
 	
 	public void ATFDCalcHandler(Set<String>allClassName,JavaParser parser,String className){
@@ -99,8 +106,8 @@ public class metricsCalculatorHandler {
         
 	}
 	
-public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,String className){
-		
+	public ArrayList<Double> ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,String className){
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             	
@@ -110,9 +117,9 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
                     for(MethodDeclaration method:n.getMethods()) {
                     	ATFDforMethodCalculator a=new ATFDforMethodCalculator(method,className,allClassName);
                         a.doOperation();
-                        int numberOfATFD=a.getATFD();
+                        list.add((double) a.getATFD());
                        
-                        System.out.println("Method Name: " + method.getNameAsString() + "\n" + "ATFD for Method: " + numberOfATFD);
+                        //System.out.println("Method Name: " + method.getNameAsString() + "\n" + "ATFD for Method: " + numberOfATFD);
                     }
                 
                     
@@ -124,11 +131,13 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		//System.out.println(list.size());
+		return list;
         
 	}
 	
-	public void NOAVCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> NOAVCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -139,7 +148,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
             			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
             			NOAVCalculator a=new NOAVCalculator(method,className,allClassName);
             			a.doOperation();
-            			System.out.println("Method: " + method.getNameAsString() + "\n" + "NOAV: " + a.getNOAV());
+            			list.add((double) a.getNOAV());
+            			//System.out.println("Method: " + method.getNameAsString() + "\n" + "NOAV: " + a.getNOAV());
                     	
                     }
                 }
@@ -149,10 +159,11 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
-	public void LOCforMethodcalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> LOCforMethodcalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -163,7 +174,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
             			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
             			LOCforMethodCalculator a=new LOCforMethodCalculator(method);
             			a.doOperation();
-            			System.out.println("Method: " + method.getNameAsString() + "\n" + "LOC: " + a.getLOC());
+            			list.add((double) a.getLOC());
+            			//System.out.println("Method: " + method.getNameAsString() + "\n" + "LOC: " + a.getLOC());
                     	
                     }
                 }
@@ -173,6 +185,7 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
 	public void LOCforClassCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
@@ -198,8 +211,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         }
 	}
 	
-	public void LAACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> LAACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -210,8 +223,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
             			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
             			LAACalculator a=new LAACalculator(method,className,allClassName);
             			a.doOperation();
-            			if(a.getLAA()<0)
-            			System.out.println("Method: " + method.getNameAsString() + "\n" + "LAA: " + a.getLAA());
+            			list.add(a.getLAA());
+            			//System.out.println("Method: " + method.getNameAsString() + "\n" + "LAA: " + a.getLAA());
                     	
                     }
                 }
@@ -221,10 +234,11 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
-	public void FDPCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> FDPCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -235,7 +249,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
             			//CyclomaticComplexityCalculator c=new CyclomaticComplexityCalculator(method);
             			FDPCalculator a=new FDPCalculator(method,className,allClassName);
             			a.doOperation();
-            			System.out.println("Method: " + method.getNameAsString() + "\n" + "FDP: " + a.getFDP());
+            			list.add((double) a.getFDP());
+            			//System.out.println("Method: " + method.getNameAsString() + "\n" + "FDP: " + a.getFDP());
                     	
                     }
                 }
@@ -245,10 +260,11 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
-	public void NOAMCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> NOAMCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -257,7 +273,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
                     super.visit(n, arg);
                     NOAMCalculator a=new NOAMCalculator(n);
             		a.doOperation();
-            		System.out.println("Class Name: " + className + "\n" + "NOAM: " + a.getNOAM());
+            		list.add((double) a.getNOAM());
+            		//System.out.println("Class Name: " + className + "\n" + "NOAM: " + a.getNOAM());
                     	
                     
                 }
@@ -267,10 +284,11 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
-	public void NOPACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
-		
+	public ArrayList<Double> NOPACalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
@@ -279,7 +297,8 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
                     super.visit(n, arg);
                     NOPACalculator a=new NOPACalculator(n);
             		a.doOperation();
-            		System.out.println("Class Name: " + className + "\n" + "NOPA: " + a.getNOPA());
+            		list.add((double) a.getNOPA());
+            		//System.out.println("Class Name: " + className + "\n" + "NOPA: " + a.getNOPA());
                     	
                     
                 }
@@ -289,21 +308,48 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
 	
-	public void WOCCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+	public ArrayList<Double> WOCCalcHandler(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<Double>list=new ArrayList<>();
+		try {
+            new VoidVisitorAdapter<Object>() {
+                @Override
+                public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+                    super.visit(n, arg);
+                    WOCCalculator a=new WOCCalculator(n);
+            		a.doOperation();
+            		//System.out.println(a.getWOC());
+            		list.add(a.getWOC());
+            		
+            		//System.out.println("Class Name: " + className + "\n" + "WOC: " + a.getWOC());
+                    	
+                    
+                }
+               
+            }.visit(JavaParser.parse(file), null);
+            
+        } catch (IOException e) {
+            new RuntimeException(e);
+        }
 		
+		return list;
+		
+	}
+	
+	public ArrayList<String> getMethodNameList(Set<String>allClassName,JavaParser parser,String className) {
+		ArrayList<String>list=new ArrayList<>();
 		try {
             new VoidVisitorAdapter<Object>() {
             
                 @Override
                 public void visit(ClassOrInterfaceDeclaration n, Object arg) {
                     super.visit(n, arg);
-                    WOCCalculator a=new WOCCalculator(n);
-            		a.doOperation();
-            		System.out.println("Class Name: " + className + "\n" + "WOC: " + a.getWOC());
+                    for (MethodDeclaration method : n.getMethods()) {
+            			list.add(method.getNameAsString());
                     	
-                    
+                    }
                 }
                
             }.visit(JavaParser.parse(file), null);
@@ -311,7 +357,11 @@ public void ATFDforMethodCalcHandler(Set<String>allClassName,JavaParser parser,S
         } catch (IOException e) {
             new RuntimeException(e);
         }
+		return list;
 	}
+	
+	
+	
 	
 	
 	

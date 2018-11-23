@@ -6,7 +6,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class FDPCalculator {
 	private MethodDeclaration method;
-	private double numberOfFDP;
+	private int numberOfFDP;
 	private String className;
 	private Set<String>allClassName;
 	
@@ -29,7 +29,7 @@ public class FDPCalculator {
 		
 	}
 	
-	public double getFDP() {
+	public int getFDP() {
 		return numberOfFDP;
 	}
 }

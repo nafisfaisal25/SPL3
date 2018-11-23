@@ -1,6 +1,8 @@
 package ExploreFiles;
 
 import CalculateMetrics.*;
+import SmellDetector.FeatureEnvyDetector;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -15,10 +17,13 @@ import com.google.common.base.Strings;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Handler;
 
 import javax.swing.SingleSelectionModel;
@@ -29,20 +34,45 @@ public class ClassExplorer {
 	public JavaParser parser=new JavaParser();
 	private String className;
 	private String packageName;
+	private int ATFDForClass;
+	private int ATFDForMethod;
+	private double LAA;
+	private int FDP;
 	
 	
 	public void doOperation(File projectDir) {
 		getAllClassName(projectDir);
 		//System.out.println(allClassName.size());
 		prepareJavaParser(new FileExplorer(projectDir).getDotjavaContainer());
-		listClasses(projectDir);
+		//listClasses(projectDir);
 	}
 
-    public void listClasses(File projectDir) {
+    public void detectFeatureEnvy(File projectDir) {
+    	
+    	Map <String, ArrayList<Double>> map=new TreeMap<>();
+    	
         new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
-            System.out.println(path);
-            System.out.println(Strings.repeat("=", path.length()));
+        	
+        	ArrayList<Double>list;
+        	ArrayList<String>methodNameList;
+        	
+            //System.out.println(path);
+            //System.out.println(Strings.repeat("=", path.length()));
             metricsCalculatorHandler handler=new metricsCalculatorHandler(file);
+            
+            list= handler.ATFDforMethodCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("ATFDForMethod", list);
+            list=handler.FDPCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("FDP", list);
+            list=handler.LAACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("LAA", list);
+            methodNameList=handler.getMethodNameList(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            
+            FeatureEnvyDetector f=new FeatureEnvyDetector();
+            f.compareMetricWithThresholad(map,methodNameList,path);
+            
+            
+            
             
             /*
             try {
@@ -60,16 +90,74 @@ public class ClassExplorer {
             //handler.FDPCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.NOAMCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             //handler.NOPACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            handler.WOCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            //handler.WOCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
 
-
-
-
-
+        }).explore(projectDir);
+    }
+    
+    public void detectLongMethod(File projectDir) {
+    	
+    	Map <String, ArrayList<Double>> map=new TreeMap<>();
+    	
+        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+        	
+        	ArrayList<Double>list;
+        	ArrayList<String>methodNameList;
+        	
+            //System.out.println(path);
+            //System.out.println(Strings.repeat("=", path.length()));
+            metricsCalculatorHandler handler=new metricsCalculatorHandler(file);
+            
+            list= handler.LOCforMethodcalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("LOCForMethod", list);
+            try {
+				list=handler.cyclomaticComplexityCaclHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            map.put("CYCLO", list);
+            list=handler.NOAVCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("NOAV", list);
+            methodNameList=handler.getMethodNameList(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            
+            LongMethodDetector l=new LongMethodDetector();
+            l.compareMetricWithThresholad(map,methodNameList,path);
             
             
         }).explore(projectDir);
     }
+    
+    public void detectDataClass(File projectDir) {
+    	
+    	Map <String, ArrayList<Double>> map=new TreeMap<>();
+    	
+        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+        	
+        	ArrayList<Double>list;
+        	
+            metricsCalculatorHandler handler=new metricsCalculatorHandler(file);
+            
+            list= handler.WOCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("WOC", list);
+            list= handler.NOPACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("NOPA", list);
+            list=handler.NOAMCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+            map.put("NOAM", list);
+            try {
+				list=handler.weightedMethodCountCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            map.put("WMC", list);
+            DataClassDetector d=new DataClassDetector();
+            d.compareMetricWithThresholad(map,path,getClassName(file));
+            
+            
+        }).explore(projectDir);
+    }
+    
     
     public void prepareJavaParser(Set <String> dotJavaContainer) {
 		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
@@ -81,7 +169,7 @@ public class ClassExplorer {
 
         
         for (String filePath : dotJavaContainer) {
-        	System.out.println(filePath);
+        	//System.out.println(filePath);
 			combinedSolver.add(new JavaParserTypeSolver(new File(filePath)));
 		}
         
