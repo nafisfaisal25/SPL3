@@ -9,6 +9,8 @@ import com.google.common.base.Strings;
 import ExploreFiles.ClassExplorer;
 
 public class LongMethodDetector {
+	private String csvString = "Full Path,Detected Long Method,"+"\n";
+
 	public LongMethodDetector() {
 		
 	}
@@ -21,6 +23,7 @@ public class LongMethodDetector {
 		ClassExplorer classexplorer=new ClassExplorer();
 		classexplorer.doOperation(projectDir);
 		classexplorer.detectLongMethod(projectDir);
+		classexplorer.CreateCSVForLongMethod();
 	}
 	
 	public void compareMetricWithThresholad(Map<String,ArrayList<Double>> map, ArrayList<String> methodNameList,String path) {
@@ -33,12 +36,22 @@ public class LongMethodDetector {
 		
 		for(int i=0;i<LOCForMethod.size();i++) {
 			if(LOCForMethod.get(i)>HIGH_class && CYCLO.get(i) >=HIGH_cyclo && NOAV.get(i) > MANY ) {
-				System.out.println(path);
-	            System.out.println(Strings.repeat("=", path.length()));
-				System.out.println(methodNameList.get(i));
+				//System.out.println(path);
+	            //System.out.println(Strings.repeat("=", path.length()));
+				//System.out.println(methodNameList.get(i));
+				generateCSVString(path, methodNameList.get(i));
+
 			}
 		}
 
 		
+	}
+	
+	private void generateCSVString(String path,String methodName) {
+		csvString+=path+","+methodName+","+"\n";
+	}
+	
+	public String getCsvString() {
+		return csvString;
 	}
 }

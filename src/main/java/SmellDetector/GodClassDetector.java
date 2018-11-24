@@ -7,8 +7,12 @@ import java.util.Map;
 import com.google.common.base.Strings;
 
 import ExploreFiles.ClassExplorer;
+import Printer.CSVFileGenerator;
 
 public class GodClassDetector {
+	private String csvString="Full Path,Detected God Class,"+"\n";
+	
+	
 	public GodClassDetector() {
 		
 	}
@@ -21,6 +25,7 @@ public class GodClassDetector {
 		ClassExplorer classexplorer=new ClassExplorer();
 		classexplorer.doOperation(projectDir);
 		classexplorer.detectGodClass(projectDir);
+		classexplorer.CreateCSVForGodClass();
 	}
 	
 	public void compareMetricWithThresholad(Map<String,ArrayList<Double>> map,String path,String className) {
@@ -36,14 +41,23 @@ public class GodClassDetector {
 		
 		for(int i=0;i<ATFD.size();i++) {
 			if( ATFD.get(i) > FEW && WMC.get(i) >= VERY_HIGH_wmc) {
-					System.out.println(path);
-		            System.out.println(Strings.repeat("=", path.length()));
-		            System.out.println(className);
+					//System.out.println(path);
+		            //System.out.println(Strings.repeat("=", path.length()));
+		            //System.out.println(className);
+		          	generateCSVString(path, className);
 				
 			}
 		}
 
 		
 	}
-
+	
+	private void generateCSVString(String path,String className) {
+		csvString+=path+","+className+","+"\n";
+	}
+	
+	public String getCsvString() {
+		return csvString;
+	}
+	
 }

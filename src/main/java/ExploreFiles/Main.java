@@ -2,8 +2,10 @@ package ExploreFiles;
 
 import java.io.File;
 
+import SmellDetector.DataClassDetector;
 import SmellDetector.FeatureEnvyDetector;
 import SmellDetector.GodClassDetector;
+import SmellDetector.LongMethodDetector;
 
 public class Main {
 
@@ -20,10 +22,11 @@ public class Main {
 		//classexplorer.doOperation(projectDir);
 		//classexplorer.listClasses(projectDir);
 		
-		//FeatureEnvyDetector f=new FeatureEnvyDetector(projectDir);
-		//LongMethodDetector l=new LongMethodDetector(projectDir);
-		//DataClassDetector d=new DataClassDetector(projectDir);
-		GodClassDetector g=new GodClassDetector(projectDir);
+		new FeatureEnvyDetector(projectDir);
+		//new LongMethodDetector(projectDir);
+		//new DataClassDetector(projectDir);
+		//new GodClassDetector(projectDir);
+		
 		
 
 	}

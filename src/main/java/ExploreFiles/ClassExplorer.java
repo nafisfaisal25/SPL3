@@ -1,6 +1,7 @@
 package ExploreFiles;
 
 import CalculateMetrics.*;
+import Printer.CSVFileGenerator;
 import SmellDetector.DataClassDetector;
 import SmellDetector.FeatureEnvyDetector;
 import SmellDetector.GodClassDetector;
@@ -37,10 +38,11 @@ public class ClassExplorer {
 	public JavaParser parser=new JavaParser();
 	private String className;
 	private String packageName;
-	private int ATFDForClass;
-	private int ATFDForMethod;
-	private double LAA;
-	private int FDP;
+	
+	GodClassDetector g=new GodClassDetector();
+	DataClassDetector d=new DataClassDetector();
+	FeatureEnvyDetector f=new FeatureEnvyDetector();
+	LongMethodDetector l=new LongMethodDetector();
 	
 	
 	public void doOperation(File projectDir) {
@@ -71,32 +73,19 @@ public class ClassExplorer {
             map.put("LAA", list);
             methodNameList=handler.getMethodNameList(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             
-            FeatureEnvyDetector f=new FeatureEnvyDetector();
+            
             f.compareMetricWithThresholad(map,methodNameList,path);
             
             
             
-            
-            /*
-            try {
-				handler.cyclomaticComplexityCaclHandler();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/  
-            //handler.ATFDCalcHandler(allClassName,parser,getPackageName(file)+"."+getClassName(file));
-            //handler.NOAVCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.LOCforMethodcalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.LOCforClassCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.ATFDforMethodCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.LAACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.FDPCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.NOAMCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.NOPACalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-            //handler.WOCCalcHandler(allClassName, parser, getPackageName(file)+"."+getClassName(file));
-
         }).explore(projectDir);
     }
+    
+    public void CreateCSVForFeatureEnvy() {
+		String csvString=f.getCsvString();
+        CSVFileGenerator csv=new CSVFileGenerator("C:\\Users\\DELL\\Desktop\\MetricsTool\\SPL3\\godClassOutput");
+        csv.print(csvString,"/featurEnvy.csv");
+	}
     
     public void detectLongMethod(File projectDir) {
     	
@@ -124,12 +113,17 @@ public class ClassExplorer {
             map.put("NOAV", list);
             methodNameList=handler.getMethodNameList(allClassName, parser, getPackageName(file)+"."+getClassName(file));
             
-            LongMethodDetector l=new LongMethodDetector();
             l.compareMetricWithThresholad(map,methodNameList,path);
             
             
         }).explore(projectDir);
     }
+    
+    public void CreateCSVForLongMethod() {
+		String csvString=l.getCsvString();
+        CSVFileGenerator csv=new CSVFileGenerator("C:\\Users\\DELL\\Desktop\\MetricsTool\\SPL3\\godClassOutput");
+        csv.print(csvString,"/LongMethod.csv");
+	}
     
     public void detectDataClass(File projectDir) {
     	
@@ -154,14 +148,20 @@ public class ClassExplorer {
 				e.printStackTrace();
 			}
             map.put("WMC", list);
-            DataClassDetector d=new DataClassDetector();
+            
             d.compareMetricWithThresholad(map,path,getClassName(file));
             
             
         }).explore(projectDir);
     }
     
-public void detectGodClass(File projectDir) {
+    public void CreateCSVForDataClass() {
+		String csvString=d.getCsvString();
+        CSVFileGenerator csv=new CSVFileGenerator("C:\\Users\\DELL\\Desktop\\MetricsTool\\SPL3\\godClassOutput");
+        csv.print(csvString,"/dataClass.csv");
+	}
+    
+    public void detectGodClass(File projectDir) {
     	
     	Map <String, ArrayList<Double>> map=new TreeMap<>();
     	
@@ -186,12 +186,19 @@ public void detectGodClass(File projectDir) {
             //map.put("TCC", list);
             
             
-            GodClassDetector g=new GodClassDetector();
+            
             g.compareMetricWithThresholad(map,path,getClassName(file));
+            
             
             
         }).explore(projectDir);
     }
+
+	public void CreateCSVForGodClass() {
+		String csvString=g.getCsvString();
+        CSVFileGenerator csv=new CSVFileGenerator("C:\\Users\\DELL\\Desktop\\MetricsTool\\SPL3\\godClassOutput");
+        csv.print(csvString,"/godClass.csv");
+	}
     
     
     public void prepareJavaParser(Set <String> dotJavaContainer) {

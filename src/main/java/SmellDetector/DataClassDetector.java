@@ -9,6 +9,8 @@ import com.google.common.base.Strings;
 import ExploreFiles.ClassExplorer;
 
 public class DataClassDetector {
+	private String csvString="Full Path,Detected Data Class,"+"\n";
+
 	public DataClassDetector() {
 		
 	}
@@ -21,6 +23,7 @@ public class DataClassDetector {
 		ClassExplorer classexplorer=new ClassExplorer();
 		classexplorer.doOperation(projectDir);
 		classexplorer.detectDataClass(projectDir);
+		classexplorer.CreateCSVForDataClass();
 	}
 	
 	public void compareMetricWithThresholad(Map<String,ArrayList<Double>> map,String path,String className) {
@@ -38,13 +41,22 @@ public class DataClassDetector {
 			//System.out.println(WOC.get(i));
 			if( ((NOAM.get(i)+NOPA.get(i))>FEW && WMC.get(i) <HIGH_wmc) || ((NOAM.get(i)+NOPA.get(i))>MANY && WMC.get(i) <VERY_HIGH_wmc) ) {
 				if(WOC.get(i) < (1.0/3)) {
-					System.out.println(path);
-		            System.out.println(Strings.repeat("=", path.length()));
-		            System.out.println(className);
+					//System.out.println(path);
+		            //System.out.println(Strings.repeat("=", path.length()));
+		            //System.out.println(className);
+					generateCSVString(path, className);
 				}
 			}
 		}
 
 		
+	}
+	
+	private void generateCSVString(String path,String className) {
+		csvString+=path+","+className+","+"\n";
+	}
+	
+	public String getCsvString() {
+		return csvString;
 	}
 }
