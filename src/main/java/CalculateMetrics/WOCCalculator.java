@@ -40,7 +40,7 @@ public class WOCCalculator {
 	
 	public void findPublicFinctionalMethod() {
 		for (MethodDeclaration method : clazz.getMethods()) {
-			if(!method.isPrivate() && !isGetterSetterMethod(method))numberOfFunctionalMethod++;
+			if(method.isPublic() && !isGetterSetterMethod(method))numberOfFunctionalMethod++;
 		}
 	}
 	
@@ -49,13 +49,13 @@ public class WOCCalculator {
         clazz.accept(new VoidVisitorAdapter<Void>() {
             @Override
             public void visit(FieldDeclaration n, Void arg) {
-                if(!n.isPrivate())numberOfPublicMember++;
+                if(n.isPublic())numberOfPublicMember++;
                 super.visit(n, arg);
             }
 
             @Override
             public void visit(MethodDeclaration n, Void arg) {
-                if(!n.isPrivate())numberOfPublicMember++;
+                if(n.isPublic())numberOfPublicMember++;
                 super.visit(n, arg);
             }
 

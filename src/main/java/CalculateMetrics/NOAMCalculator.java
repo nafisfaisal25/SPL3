@@ -21,7 +21,7 @@ public class NOAMCalculator {
 	private void claculateNOAM() {
 		for (MethodDeclaration method : clazz.getMethods()) {
 			//System.out.println(method.getNameAsString());
-			if( !method.isPrivate() ) {
+			if( method.isPublic() ) {
 				
 				if(method.getNameAsString().startsWith("get"))numberOfNOAM++;
 				else if(method.getNameAsString().startsWith("set"))numberOfNOAM++;

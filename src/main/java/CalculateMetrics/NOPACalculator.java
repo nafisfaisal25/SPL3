@@ -23,7 +23,7 @@ public class NOPACalculator {
 	private void calculateNOPA() {
 		List<FieldDeclaration> fields=clazz.getFields();
 		for (FieldDeclaration fieldDeclaration : fields) {
-			if(!fieldDeclaration.isPrivate() && !fieldDeclaration.isStatic())numberOfNOPA++;
+			if(fieldDeclaration.isPublic() && !fieldDeclaration.isStatic())numberOfNOPA++;
 		}
 	}
 	

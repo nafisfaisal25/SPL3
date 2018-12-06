@@ -265,7 +265,12 @@ public class ClassExplorer {
             	@Override
                 public void visit(CompilationUnit n, Object arg) {
                     super.visit(n, arg);
-                    packageName=n.getPackageDeclaration().get().getNameAsString();
+                    try {
+                        packageName=n.getPackageDeclaration().get().getNameAsString();
+
+					} catch (Exception e) {
+						packageName="";
+					}
                     
                 }
             }.visit(JavaParser.parse(file), null);
