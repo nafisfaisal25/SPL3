@@ -3,6 +3,7 @@ package ExploreFiles;
 import CalculateMetrics.*;
 import Printer.CSVFileGenerator;
 import SmellDetector.DataClassDetector;
+import SmellDetector.DuplicatedCodeDetector;
 import SmellDetector.FeatureEnvyDetector;
 import SmellDetector.GodClassDetector;
 import SmellDetector.LongMethodDetector;
@@ -205,6 +206,9 @@ public class ClassExplorer {
         csv.print(csvString,"/godClass.csv");
 	}
     
+
+	
+	
     
     public void prepareJavaParser(Set <String> dotJavaContainer) {
 		TypeSolver reflectionTypeSolver = new ReflectionTypeSolver();
@@ -284,15 +288,7 @@ public class ClassExplorer {
         }
         return packageName;
    
-}
-    
-    
-    
-    
-
-    public static void main(String[] args) {
-        //File projectDir = new File("../SymbolSolverExperiment");
-        //listClasses(projectDir);
     }
+    
 }
 
